@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script>
+	function goto(url) {
+		window.location.href = url;
+	}
+	function obj(id) {
+		return document.getElementById(id);
+	}
+	function ajaxRequest(url, objID, callback) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				if(obj(objID) != null)
+					obj(objID).innerHTML = this.responseText;
+				if(callback != undefined && typeof callback == 'function')
+					callback(this.responseText);
+			}
+		};
+		xhttp.open("GET", url, true);
+		xhttp.send();
+	}
+	function ajaxRequestPost(url, body, objID, callback) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				if(obj(objID) != null)
+					obj(objID).innerHTML = this.responseText;
+				if(callback != undefined && typeof callback == 'function')
+					callback(this.responseText);
+			}
+		};
+		xhttp.open("POST", url, true);
+		xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhttp.send(body);
+	}
+	function urlencodeObject(srcjson){
+		if(typeof srcjson !== "object")
+			return null;
+		var urljson = "";
+		var keys = Object.keys(srcjson);
+		for(var i=0; i <keys.length; i++){
+			urljson += encodeURIComponent(keys[i]) + "=" + encodeURIComponent(srcjson[keys[i]]);
+			if(i < (keys.length-1))urljson+="&";
+		}
+		return urljson;
+	}
+	function setCookie(name,value,days) {
+		var expires = "";
+		if(days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days*24*60*60*1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+	}
+	function getCookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+	function eraseCookie(name) {
+		document.cookie = name+'=; Max-Age=-99999999;';
+	}
+
+	document.addEventListener("keydown", handleKeyDown, false);
+	function handleKeyDown(e) {
+		if(e.repeat) { return }
+		var keyCode = e.keyCode;
+		if(keyCode == 65/*A*/ || keyCode == 37/*LEFT*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'a+'}), null, function(responseText) {});
+		} else if(keyCode == 68/*D*/ || keyCode == 39/*RIGHT*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'a-'}), null, function(responseText) {});
+		} else if(keyCode == 87/*W*/ || keyCode == 38/*UP*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'b-'}), null, function(responseText) {});
+		} else if(keyCode == 83/*S*/ || keyCode == 40/*DOWN*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'b+'}), null, function(responseText) {});
+		} else if(keyCode == 32/*SPACE*/ || keyCode == 13/*ENTER*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'c+'}), null, function(responseText) {});
+		}
+	}
+
+	document.addEventListener("keyup", handleKeyUp, false);
+	function handleKeyUp(e) {
+		var keyCode = e.keyCode;
+		if(keyCode == 65/*A*/ || keyCode == 37/*LEFT*/ || keyCode == 68/*D*/ || keyCode == 39/*RIGHT*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'a.'}), null, function(responseText) {});
+		} else if(keyCode == 87/*W*/ || keyCode == 38/*UP*/ || keyCode == 83/*S*/ || keyCode == 40/*DOWN*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'b.'}), null, function(responseText) {});
+		} else if(keyCode == 32/*SPACE*/ || keyCode == 13/*ENTER*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'motorctl' : 'c.'}), null, function(responseText) {});
+		} else if(keyCode == 16/*LSHIFT*/) {
+			ajaxRequestPost('index.php', urlencodeObject({'dbg' : '1'}), null, function(responseText) {});
+		}
+	}
+
+	ajaxRequestPost('index.php', urlencodeObject({'statusctl' : 'begin'}), null, function(responseText) {});
+	</script>
+	<style>
+	body, html {
+		background-color: black;
+		margin: 0px;
+		padding: 0px;
+		height: 100%;
+		width: 100%;
+	}
+	#imgLive {
+		width: 100%;
+		height: 100%;
+	}
+	#divLegend {
+		font-family: sans-serif;
+		position: absolute;
+		bottom: 10px;
+		left: 10px;
+		padding: 12px;
+		background-color: rgba(0,0,0,0.6);
+		border-radius: 4px;
+		color: #82D463;
+	}
+	#divLegend .key {
+		font-family: monospace;
+		font-weight: bold;
+	}
+	#divLegend .description {
+		opacity: 0.6;
+	}
+	</style>
+</head>
+<body>
+
+<img id="imgLive" src="http://SERVERNAME:8081/"></iframe>
+<div id="divLegend">
+	<div><b>SIEBER SYSTEMS</b><br>Rocket Launcher OS</div>
+	<hr>
+	<div><span class="key">W/⭡</span>&nbsp;<span class="description">Move Up</span></div>
+	<div><span class="key">S/⭣</span>&nbsp;<span class="description">Move Down</span></div>
+	<div><span class="key">A/⭠</span>&nbsp;<span class="description">Move Left</span></div>
+	<div><span class="key">D/⭢</span>&nbsp;<span class="description">Move Right</span></div>
+	<div><span class="key">SPACE/ENTER</span>&nbsp;<span class="description">Fire!</span></div>
+</div>
+
+</body>
+</html>

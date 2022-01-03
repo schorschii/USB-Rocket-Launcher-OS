@@ -1,0 +1,10 @@
+[Unit]
+Description=Rocket Launcher Server
+
+[Service]
+Type=simple
+ExecStart=python3 io.py
+WorkingDirectory=/opt/rocket
+
+[Install]
+WantedBy=multi-user.target
