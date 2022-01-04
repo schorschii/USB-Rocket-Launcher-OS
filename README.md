@@ -3,7 +3,8 @@ Python script with web interface for Raspberry Pi controlling a USB (nerf) rocke
 
 ## Hardware
 I recently bought the "Dream Cheeky iLaunch Thunder" bluetooth rocket launcher, but the related app was not available anymore on the App Store. So I decided to replace the original board from the iLaunch Thunder with a Raspberry Pi Zero.
-![Image of Rocket Launcher](https://www.freshnessmag.com/.image/ar_4:3%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTM2NzkwODI5NDg2MTg4MTI3/dream-cheeky-ilaunch-thunder-iphone-missile-launcher-07.jpg | width=100)
+
+![Image of the Raspberry Pi Controlled Rocket Launcher](.github/image.jpg)
 
 The motors are controlled by [L9110S DC Motor Drive Modules](https://www.amazon.de/gp/product/B07Y15GL6J/). I removed the screw connectors from the boards and soldered the wires directly on it so that it fits in the small box of the rocket launcher.
 
